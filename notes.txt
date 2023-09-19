@@ -1,0 +1,4 @@
+1. Setup the application using node.js and typescript
+2. Setup testing with jest and supertest
+3. Setup CI/CD pipeline with Github actions
+4. 
