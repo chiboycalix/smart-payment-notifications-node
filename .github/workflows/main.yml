@@ -1,0 +1,27 @@
+name: Node.js CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the app
+        run: npm run build
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Deploy the app to production
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
