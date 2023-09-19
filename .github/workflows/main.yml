@@ -7,6 +7,39 @@ on:
   pull_request:
 
 jobs:
+  test:
+    strategy:
+      matrix:
+        platform: [ ubuntu-latest, macOS-latest ]
+        node: [ '18' ]
+    name: test/node ${{ matrix.node }}/${{ matrix.platform }}
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-node@master
+      with:
+        node-version: ${{ matrix.node }}
+    - run: npm install -g yarn
+    - run: yarn install
+    - run: yarn build
+    - run: yarn test
+  coverage:
+      needs: [ test ]
+      name: coverage
+      runs-on: ubuntu-latest
+      steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: '18'
+      - run: npm install -g yarn
+      - run: yarn install
+      - run: yarn build
+      - uses: paambaati/codeclimate-action@v3.1.1
+        env:
+          CC_TEST_REPORTER_ID: ef6a4b3e0ecc9a831db6e99fc412284e8c67e6a5d0e85718204e7b2a25f0e415
+        with:
+          coverageCommand: yarn coverage
   build:
     runs-on: ubuntu-latest
 
@@ -14,13 +47,13 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: npm install
+        run: yarn
 
       - name: Build the app
-        run: npm run build
+        run: yarn build
 
       - name: Run tests
-        run: npm run test
+        run: yarn test
 
       - name: Deploy the app to production
         uses: actions/checkout@v3
