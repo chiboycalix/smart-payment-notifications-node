@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         platform: [ ubuntu-latest, macOS-latest ]
-        node: [ '18', '16' ]
+        node: [ '18' ]
     name: test/node ${{ matrix.node }}/${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
     steps:
@@ -35,7 +35,7 @@ jobs:
       - run: npm install -g yarn
       - run: yarn install
       - run: yarn build
-      - uses: paambaati/codeclimate-action@v2.2.4
+      - uses: paambaati/codeclimate-action@v3.1.1
         env:
           CC_TEST_REPORTER_ID: ef6a4b3e0ecc9a831db6e99fc412284e8c67e6a5d0e85718204e7b2a25f0e415
         with:
