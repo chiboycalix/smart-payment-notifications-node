@@ -1,0 +1,11 @@
+I started by setting up the project using node.js v18 and typescript. I used the default typescript configuration. I also ensured
+babel was setup so as to be able to make use of es6 imports. Then I proceded to setting connecting my app to code climate for code
+analysis and test coverage report. I also installed jest and supertest which was my preferred testing framework due to it's simpli
+city and ease of use.
+
+For database, I decided on using mongodb since it was easy to setup. I also installed and configured nodemon for hot reloading
+
+I added eslint and prettier to maintain a coding standard
+`npm install --save-dev @types/node @typescript-eslint/eslint-plugin \
+@typescript-eslint/parser eslint eslint-config-prettier eslint-plugin-import \
+eslint-plugin-prettier prettier ts-node typescript`
