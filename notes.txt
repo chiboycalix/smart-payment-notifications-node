@@ -1,4 +1,14 @@
 1. Setup the application using node.js and typescript
 2. Setup testing with jest and supertest
 3. Setup CI/CD pipeline with Github actions
-4. 
+4. Setup Code Climate with test coverage
+
+App Features (Node.Js)
+1. Users can register
+2. Users can Login
+3. Users can Reset their Passwords if forgotten
+4. Add a second factor authentication (Google Authenticator)
+5. Users can create a bank account
+6. Inegrate Stripe for payment
+7. Users can credit their account and recieve instant notification
+8. Users can be debited and recieve instant notification

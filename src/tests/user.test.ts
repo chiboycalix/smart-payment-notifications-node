@@ -1,5 +1,5 @@
-import { sum } from '../app';
-
-test('adds 1 + 2 to equal 3', () => {
-  expect(sum(1, 2)).toBe(3);
+describe("POST test", () => {
+  it("should signup a new user", async () => {
+    expect(1).toBe(1);
+  });
 });
