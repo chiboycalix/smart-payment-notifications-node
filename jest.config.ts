@@ -13,4 +13,5 @@ export default {
     },
   },
   verbose: true,
+  coveragePathIgnorePatterns: ["<rootDir>/src/app.ts", "<rootDir>/src/routes"],
 };

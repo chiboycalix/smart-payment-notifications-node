@@ -1,10 +1,12 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-
 import { API } from "./routes";
+import { CustomError } from "./exceptions/customError";
+import { globalErrorHandler } from "./middlewares/errorHandler";
 
 dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 2000;
 const MONGODB_URI =
@@ -13,10 +15,6 @@ const MONGODB_URI =
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Use API router
-app.use("/api/v1", API.connect());
-
 if (process.env.NODE_ENV !== "test") {
   mongoose
     .connect(MONGODB_URI, {})
@@ -31,4 +29,14 @@ if (process.env.NODE_ENV !== "test") {
     });
 }
 
+app.use("/api/v1", API.connect());
+app.all("*", (req: Request, res: Response, next: NextFunction) => {
+  const error: any = new CustomError(
+    `Can't find ${req.originalUrl} on this server`,
+    404
+  );
+  next(error);
+});
+
+app.use(globalErrorHandler);
 export default app;
