@@ -7,8 +7,8 @@
     "dev": "npx nodemon",
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node build/app.js",
-    "test": "NODE_ENV=test nyc jest",
-    "coverage": "jest --coverage",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --no-cache  --detectOpenHandles --runInBand --forceExit",
+    "coverage": "jest --coverage --no-cache  --detectOpenHandles --runInBand --forceExit",
     "lint": "eslint src/**/*.ts",
     "format": "eslint src/**/*.ts --fix"
   },
@@ -27,6 +27,7 @@
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.2",
     "chalk": "^5.3.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.49.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.28.1",
