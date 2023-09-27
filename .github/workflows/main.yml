@@ -30,6 +30,8 @@ jobs:
       - run: yarn test
     env:
       MONGODB_URI: mongodb://localhost:27017/smart-payment-notification
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
   coverage:
     needs: [test]
     name: coverage
