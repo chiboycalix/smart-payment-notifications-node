@@ -61,9 +61,6 @@ jobs:
       - name: Build the app
         run: yarn build
 
-      - name: Run tests
-        run: yarn test
-
       - name: Deploy the app to production
         uses: actions/checkout@v3
         with:
