@@ -13,7 +13,7 @@ jobs:
         platform: [ubuntu-latest, macOS-latest]
         node: ["18"]
     name: test/node ${{ matrix.node }}/${{ matrix.platform }}
-    runs-on: ${{ matrix.platform }}
+    runs-on: ubuntu-latest
     services:
       mongodb:
         image: mongo:latest
