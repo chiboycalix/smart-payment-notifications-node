@@ -33,7 +33,6 @@ jobs:
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
   coverage:
-    needs: [test]
     name: coverage
     runs-on: ubuntu-latest
     steps:
