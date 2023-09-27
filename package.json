@@ -7,7 +7,7 @@
     "dev": "npx nodemon",
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node build/app.js",
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --coverage --no-cache  --detectOpenHandles --runInBand --forceExit",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest --coverage --no-cache  --detectOpenHandles --runInBand --forceExit",
     "coverage": "jest --coverage --no-cache  --detectOpenHandles --runInBand --forceExit",
     "lint": "eslint src/**/*.ts",
     "format": "eslint src/**/*.ts --fix"
