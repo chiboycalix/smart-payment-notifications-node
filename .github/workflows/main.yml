@@ -42,8 +42,6 @@ jobs:
           node-version: "18"
       - run: npm install -g yarn
       - run: yarn install
-      # If 'yarn coverage' inherently runs tests, you can remove the 'yarn build' step
-      # - run: yarn build
       - uses: paambaati/codeclimate-action@v3.1.1
         env:
           CC_TEST_REPORTER_ID: ef6a4b3e0ecc9a831db6e99fc412284e8c67e6a5d0e85718204e7b2a25f0e415
