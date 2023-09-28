@@ -1,5 +1,5 @@
 import request from "supertest";
-import express, { Express, Request, Response, NextFunction } from "express";
+import express, { Express } from "express";
 
 import { UserRepository } from "../../repositories/userRepository";
 import { AuthController } from "../../controllers/authController";
