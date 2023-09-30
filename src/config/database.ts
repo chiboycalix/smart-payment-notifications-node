@@ -1,13 +1,9 @@
 import mongoose from "mongoose";
-
-const MONGODB_URI =
-  process.env.MONGODB_URI ||
-  "mongodb://localhost:27017/smart-payment-notifications";
-const PORT = process.env.PORT || 2000;
+import { MONGODB_URI, NODE_ENV, PORT } from "./env";
 
 export const database = {
   connect: (app: any) => {
-    if (process.env.NODE_ENV !== "test") {
+    if (NODE_ENV !== "test") {
       mongoose
         .connect(MONGODB_URI, {})
         .then(() => {

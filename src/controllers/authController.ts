@@ -1,4 +1,3 @@
-import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
@@ -7,8 +6,9 @@ import { CustomError } from "../exceptions/customError";
 import { UserRepository } from "../repositories/userRepository";
 import { ILoginUser, IUser } from "../interfaces/user";
 import { successResponse } from "../responses/successResponse";
+import { JWT_SECRET } from "../config/env";
+import { sendEmail } from "../utils/emailSender";
 
-dotenv.config();
 export class AuthController {
   static register = asyncErrorHandler(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -34,11 +34,9 @@ export class AuthController {
       const hashedPassword = await bcrypt.hash(user.password, 10);
       user.password = hashedPassword;
       const createdUser = (await UserRepository.createUser(user)) as any;
-      const token = jwt.sign(
-        { email: createdUser.email },
-        process.env.JWT_SECRET,
-        { expiresIn: "1d" }
-      );
+      const token = jwt.sign({ email: createdUser.email }, JWT_SECRET, {
+        expiresIn: "1d",
+      });
       const userWithToken = {
         _id: createdUser._id,
         firstName: createdUser.firstName,
@@ -56,7 +54,6 @@ export class AuthController {
   static login = asyncErrorHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       const user: ILoginUser = req.body;
-
       if (!user.email || !user.password) {
         return next(new CustomError("Email and password are required", 400));
       }
@@ -78,11 +75,9 @@ export class AuthController {
         return next(new CustomError("Invalid credentials", 401));
       }
 
-      const token = jwt.sign(
-        { email: foundUser.email },
-        process.env.JWT_SECRET,
-        { expiresIn: "1d" }
-      );
+      const token = jwt.sign({ email: foundUser.email }, JWT_SECRET, {
+        expiresIn: "1d",
+      });
       const userWithToken = {
         _id: foundUser._id,
         firstName: foundUser.firstName,
@@ -91,6 +86,33 @@ export class AuthController {
         token,
       };
       successResponse(res, userWithToken, 200);
+    }
+  );
+
+  static forgotPassword = asyncErrorHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { email } = req.body;
+      if (!email) {
+        return next(new CustomError("Email is required", 400));
+      }
+
+      const foundUser = (await UserRepository.findUserByEmail(email)) as IUser;
+
+      if (!foundUser) {
+        return next(new CustomError("User not found", 404));
+      }
+
+      const token = jwt.sign({ email: foundUser.email }, JWT_SECRET, {
+        expiresIn: "1d",
+      });
+      sendEmail({
+        email,
+        token,
+        emailType: "forgotPassword",
+        subject: "Forget Password",
+        username: foundUser.firstName,
+      });
+      successResponse(res, { message: "Email sent" }, 200);
     }
   );
 }
