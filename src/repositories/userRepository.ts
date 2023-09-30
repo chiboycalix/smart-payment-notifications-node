@@ -1,5 +1,5 @@
 import { User } from "../models/User";
-import { IUser, ILoginUser } from "../interfaces/user";
+import { IUser } from "../interfaces/user";
 export class UserRepository {
   static async createUser(user: IUser): Promise<IUser> {
     return User.create(user);
