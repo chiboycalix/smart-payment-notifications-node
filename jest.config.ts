@@ -6,13 +6,13 @@ export default {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/src/$1",
   },
-  // setupFilesAfterEnv: ["<rootDir>/src/tests/setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/src/tests/setup.ts"],
   globals: {
     transform: {
       tsconfig: "tsconfig.json",
     },
   },
-  testTimeout: 20000,
+  testTimeout: 10000,
   verbose: true,
   coveragePathIgnorePatterns: [
     "<rootDir>/src/app.ts",

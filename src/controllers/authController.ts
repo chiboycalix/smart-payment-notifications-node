@@ -10,7 +10,12 @@ import { JWT_SECRET } from "../config/env";
 import { sendEmail } from "../utils/emailSender";
 
 export class AuthController {
-  static register = asyncErrorHandler(
+  private userRepository: UserRepository;
+  constructor({ userRepository }: { userRepository: UserRepository }) {
+    this.userRepository = userRepository;
+  }
+
+  register = asyncErrorHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       const user: IUser = req.body;
 
@@ -23,17 +28,17 @@ export class AuthController {
         );
       }
 
-      const foundUser = (await UserRepository.findUserByEmail(
+      const foundUser = (await this.userRepository.findUserByEmail(
         user.email
       )) as IUser;
 
       if (foundUser) {
-        return next(new CustomError("User already exists", 400));
+        return next(new CustomError("User already exists", 409));
       }
 
       const hashedPassword = await bcrypt.hash(user.password, 10);
       user.password = hashedPassword;
-      const createdUser = (await UserRepository.createUser(user)) as any;
+      const createdUser = (await this.userRepository.createUser(user)) as any;
       const token = jwt.sign({ email: createdUser.email }, JWT_SECRET, {
         expiresIn: "1d",
       });
@@ -44,21 +49,18 @@ export class AuthController {
         email: createdUser.email,
         token,
       };
-      if (!createdUser) {
-        return next(new CustomError("User not created", 500));
-      }
       successResponse(res, userWithToken, 201);
     }
   );
 
-  static login = asyncErrorHandler(
+  login = asyncErrorHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       const user: ILoginUser = req.body;
       if (!user.email || !user.password) {
         return next(new CustomError("Email and password are required", 400));
       }
 
-      const foundUser = (await UserRepository.findUserByEmail(
+      const foundUser = (await this.userRepository.findUserByEmail(
         user.email
       )) as any;
 
@@ -89,14 +91,16 @@ export class AuthController {
     }
   );
 
-  static forgotPassword = asyncErrorHandler(
+  forgotPassword = asyncErrorHandler(
     async (req: Request, res: Response, next: NextFunction) => {
       const { email } = req.body;
       if (!email) {
         return next(new CustomError("Email is required", 400));
       }
 
-      const foundUser = (await UserRepository.findUserByEmail(email)) as IUser;
+      const foundUser = (await this.userRepository.findUserByEmail(
+        email
+      )) as IUser;
 
       if (!foundUser) {
         return next(new CustomError("User not found", 404));

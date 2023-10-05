@@ -23,7 +23,7 @@ app.use(Sentry.Handlers.requestHandler());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-database.connect(app);
+database.connect();
 
 app.use(Sentry.Handlers.tracingHandler());
 app.use("/api/v1", API.connect());
@@ -39,4 +39,5 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
 });
 app.use(Sentry.Handlers.errorHandler());
 app.use(globalErrorHandler);
+
 export default app;

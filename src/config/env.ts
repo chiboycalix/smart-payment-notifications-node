@@ -10,6 +10,8 @@ export const MAIL_AUTH_PASS = process.env.MAIL_AUTH_PASS || "pass";
 export const JWT_SECRET = process.env.JWT_SECRET || "secret";
 export const MONGODB_URI =
   process.env.MONGODB_URI || "mongodb://localhost:27017";
+export const MONGODB_URI_TEST =
+  process.env.MONGODB_URI_TEST || "mongodb://localhost:27017";
 export const PORT = process.env.PORT || 5000;
 export const NODE_ENV = process.env.NODE_ENV || "development";
 export const CLIENT_BASE_URL =

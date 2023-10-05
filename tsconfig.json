@@ -23,5 +23,6 @@
     "removeComments": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "tests/**/*.ts"]
+  "exclude": ["node_modules", "tests/**/*.ts"],
+  "typeRoots": ["./node_modules/@types", "./types"]
 }
