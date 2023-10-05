@@ -1,3 +1,4 @@
+import { NODE_ENV } from "../config/env";
 import dotenv from "dotenv";
 import { Request, Response, NextFunction } from "express";
 dotenv.config();
@@ -42,13 +43,13 @@ export const globalErrorHandler = (
   error.statusCode = error.statusCode || 500;
   error.status = error.status || "fail";
   error.message = error.message || "Internal Server Error";
-  if (process.env.NODE_ENV === "test") {
+  if (NODE_ENV === "test") {
     testErrors(res, error);
   }
-  if (process.env.NODE_ENV === "development") {
+  if (NODE_ENV === "development") {
     devErrors(res, error);
   }
-  if (process.env.NODE_ENV === "production") {
+  if (NODE_ENV === "production") {
     prodErrors(res, error);
   }
 };

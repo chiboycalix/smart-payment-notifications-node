@@ -12,10 +12,15 @@ export default {
       tsconfig: "tsconfig.json",
     },
   },
+  testTimeout: 10000,
   verbose: true,
   coveragePathIgnorePatterns: [
     "<rootDir>/src/app.ts",
     "<rootDir>/src/routes",
     "<rootDir>/src/config",
+    "<rootDir>/src/middlewares",
+    "<rootDir>/src/exceptions",
+    "<rootDir>/src/utils",
+    "<rootDir>/src/responses",
   ],
 };

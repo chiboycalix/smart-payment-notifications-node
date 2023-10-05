@@ -1,11 +1,15 @@
-import { User } from "../models/User";
-import { IUser, ILoginUser } from "../interfaces/user";
+import { Document, Schema, model, Model } from "mongoose";
+import { IUser } from "../interfaces/user";
 export class UserRepository {
-  static async createUser(user: IUser): Promise<IUser> {
-    return User.create(user);
+  private userModel: Model<IUser>;
+  constructor({ userModel }: { userModel: Model<IUser> }) {
+    this.userModel = userModel;
+  }
+  async createUser(user: IUser): Promise<IUser> {
+    return this.userModel.create(user);
   }
 
-  static async findUserByEmail(email: string): Promise<IUser | null> {
-    return User.findOne({ email });
+  async findUserByEmail(email: string): Promise<IUser | null> {
+    return this.userModel.findOne({ email });
   }
 }

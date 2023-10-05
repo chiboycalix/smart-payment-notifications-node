@@ -29,7 +29,7 @@ jobs:
       - run: yarn build
       - run: yarn test
     env:
-      MONGODB_URI: mongodb://localhost:27017/smart-payment-notification
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
   coverage:
@@ -45,7 +45,7 @@ jobs:
       - run: yarn build
       - uses: paambaati/codeclimate-action@v3.1.1
         env:
-          CC_TEST_REPORTER_ID: ef6a4b3e0ecc9a831db6e99fc412284e8c67e6a5d0e85718204e7b2a25f0e415
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
         with:
           coverageCommand: yarn coverage

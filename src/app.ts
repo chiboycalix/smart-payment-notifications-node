@@ -1,7 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import * as Sentry from "@sentry/node";
-import { ProfilingIntegration } from "@sentry/profiling-node";
 import { API } from "./routes";
 import { CustomError } from "./exceptions/customError";
 import { globalErrorHandler } from "./middlewares/errorHandler";
@@ -15,7 +14,6 @@ Sentry.init({
   integrations: [
     new Sentry.Integrations.Http({ tracing: true }),
     new Sentry.Integrations.Express({ app }),
-    new ProfilingIntegration(),
   ],
   tracesSampleRate: 1.0,
   profilesSampleRate: 1.0,
@@ -25,7 +23,7 @@ app.use(Sentry.Handlers.requestHandler());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-database.connect(app);
+database.connect();
 
 app.use(Sentry.Handlers.tracingHandler());
 app.use("/api/v1", API.connect());
@@ -41,4 +39,5 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
 });
 app.use(Sentry.Handlers.errorHandler());
 app.use(globalErrorHandler);
+
 export default app;
