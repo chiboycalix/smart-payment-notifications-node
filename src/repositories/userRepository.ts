@@ -12,4 +12,8 @@ export class UserRepository {
   async findUserByEmail(email: string): Promise<IUser | null> {
     return this.userModel.findOne({ email });
   }
+
+  async updateUser(id: string, user: IUser): Promise<IUser | null | any> {
+    return this.userModel.updateOne({ _id: id }, user);
+  }
 }
