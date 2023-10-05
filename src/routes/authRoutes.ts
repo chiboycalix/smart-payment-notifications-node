@@ -14,3 +14,7 @@ AuthRouter.post(
   "/forgot-password",
   authController.forgotPassword.bind(authController)
 );
+AuthRouter.post(
+  "/reset-password",
+  authController.resetPassword.bind(authController)
+);

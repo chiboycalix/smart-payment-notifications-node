@@ -119,4 +119,27 @@ export class AuthController {
       successResponse(res, { message: "Email sent" }, 200);
     }
   );
+
+  resetPassword = asyncErrorHandler(
+    async (req: Request, res: Response, next: NextFunction) => {
+      const { password, token } = req.body;
+      if (!password || !token) {
+        return next(new CustomError("Password and token are required", 400));
+      }
+
+      const decodedToken = jwt.verify(token, JWT_SECRET) as any;
+      const foundUser = (await this.userRepository.findUserByEmail(
+        decodedToken.email
+      )) as IUser | any;
+
+      if (!foundUser) {
+        return next(new CustomError("User not found", 404));
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      foundUser.password = hashedPassword;
+      await this.userRepository.updateUser(foundUser._id, foundUser);
+      successResponse(res, { message: "Password updated" }, 200);
+    }
+  );
 }
