@@ -6,3 +6,4 @@ coverage
 transactions.json
 notes.txt
 post.txt
+.husky
