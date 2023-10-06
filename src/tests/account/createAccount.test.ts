@@ -26,7 +26,7 @@ describe("Create Account Tests", () => {
     await Account.create({
       accountName: "New Account",
       accountNumber: "0114276910",
-      accountBalance: "20",
+      accountBalance: 20,
       owner: user._id,
     });
 
@@ -41,7 +41,7 @@ describe("Create Account Tests", () => {
   it("should return 401 if not auth token is provided", async () => {
     const response = await request(app)
       .post(`${baseUrl}/account`)
-      .send({ firstName: "John", lastName: "Doe" });
+      .send({ accountName: "New Account", accountNumber: "0114276910" });
     expect(response.statusCode).toBe(401);
   });
 
@@ -66,7 +66,7 @@ describe("Create Account Tests", () => {
       .send({
         accountName: "New Account",
         accountNumber: "0114276911",
-        accountBalance: "20",
+        accountBalance: 20,
         owner: owner,
       });
     expect(response.statusCode).toBe(404);
@@ -80,7 +80,7 @@ describe("Create Account Tests", () => {
       .send({
         accountName: "New Account",
         accountNumber: "0114276911",
-        accountBalance: "20",
+        accountBalance: 20,
         owner: owner,
       });
     expect(response.statusCode).toBe(201);
