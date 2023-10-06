@@ -3,3 +3,6 @@ node_modules
 build
 coverage
 .nyc_output
+transactions.json
+notes.txt
+post.txt

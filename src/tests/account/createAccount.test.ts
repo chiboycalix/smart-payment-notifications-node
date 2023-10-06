@@ -45,7 +45,7 @@ describe("Create Account Tests", () => {
     expect(response.statusCode).toBe(401);
   });
 
-  it("should return 400 if required paramerers are provided", async () => {
+  it("should return 400 if required parameters are not provided", async () => {
     const response = await request(app)
       .post(`${baseUrl}/account`)
       .set("Authorization", `Bearer ${token}`)
