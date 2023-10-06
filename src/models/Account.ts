@@ -8,8 +8,8 @@ const accountSchema = new Schema(
   {
     accountName: { type: String, required: true },
     accountNumber: { type: String, required: true, unique: true },
-    accountBalance: { type: String, required: true },
-    owner: { type: String, required: true },
+    accountBalance: { type: Number, required: true },
+    owner: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );

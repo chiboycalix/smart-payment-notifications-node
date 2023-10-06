@@ -9,4 +9,19 @@ export class AccountRepository {
   async createAccount(account: IAccount): Promise<IAccount> {
     return this.accountModel.create(account);
   }
+
+  async findAccountByAccountNumber(accountNumber: string): Promise<IAccount> {
+    return this.accountModel.findOne({ accountNumber });
+  }
+
+  async updateAccountBalance(
+    amount: number,
+    accountNumber: string
+  ): Promise<IAccount> {
+    return this.accountModel.findOneAndUpdate(
+      { accountNumber },
+      { $inc: { accountBalance: amount } },
+      { new: true }
+    );
+  }
 }
