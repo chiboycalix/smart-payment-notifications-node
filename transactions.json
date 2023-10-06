@@ -1,0 +1,32 @@
+{
+  "status": "00",
+  "message": "The process was completed successully",
+  "data": {
+    "headers": {
+      "account_number": "0123456789",
+      "currency_code": "NGN",
+      "start_date": "2022-01-01",
+      "end_date": "2022-07-31",
+      "first_transaction": "2022-01-13",
+      "last_transaction": "2022-06-27",
+      "opening_balance": 10000,
+      "total_debits": 12345,
+      "total_credit": 56789,
+      "closing_balance": 54444
+    },
+    "transactions": [
+      {
+        "id": "1234567890",
+        "amount": 1000,
+        "channel": "ATM",
+        "debit_credit": "debit",
+        "narration": "ATM Withdrawal/Karaole LANG",
+        "reference": "WDS12345678909987",
+        "transaction_time": "2019-01-02T19:58:47.1234567",
+        "transaction_type": "ATM Withdrawal",
+        "value_date": "2019-01-02",
+        "balance_after": 1200
+      }
+    ]
+  }
+}

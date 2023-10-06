@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { MONGODB_URI, NODE_ENV, MONGODB_URI_TEST } from "./env";
-console.log(NODE_ENV, "NODE_ENV");
+import { MONGODB_URI, NODE_ENV } from "./env";
+
 export const database = {
   connect: () => {
     if (NODE_ENV !== "test") {
