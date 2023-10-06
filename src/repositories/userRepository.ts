@@ -1,4 +1,4 @@
-import { Document, Schema, model, Model } from "mongoose";
+import { Model } from "mongoose";
 import { IUser } from "../interfaces/user";
 export class UserRepository {
   private userModel: Model<IUser>;
