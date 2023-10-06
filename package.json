@@ -14,7 +14,7 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "*test.ts": "npm test"
+    "*": "npm test"
   },
   "keywords": [],
   "author": "",
