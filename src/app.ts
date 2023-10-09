@@ -1,5 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
+import chalk from "chalk";
+import morgan from "morgan";
 import * as Sentry from "@sentry/node";
 import { API } from "./routes";
 import { CustomError } from "./exceptions/customError";
@@ -19,10 +21,19 @@ Sentry.init({
   profilesSampleRate: 1.0,
 });
 
+const logger = morgan((tokens, req, res) => {
+  return [
+    chalk.hex("#f5a142").bold(tokens.method(req, res)),
+    chalk.hex("#4286f5").bold(tokens.url(req, res)),
+    chalk.hex("#42f55e")(tokens["response-time"](req, res) + " ms"),
+    chalk.yellow(tokens.status(req, res)),
+    chalk.gray(`from ${tokens["user-agent"](req, res)}`),
+  ].join(" ");
+});
+app.use(logger);
 app.use(Sentry.Handlers.requestHandler());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 database.connect();
 
 app.use(Sentry.Handlers.tracingHandler());
@@ -39,5 +50,5 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
 });
 app.use(Sentry.Handlers.errorHandler());
 app.use(globalErrorHandler);
-
+export { chalk };
 export default app;
