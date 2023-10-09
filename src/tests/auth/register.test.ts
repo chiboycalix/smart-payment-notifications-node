@@ -1,9 +1,13 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import request from "supertest";
 import app from "../../app";
 import { User } from "../../models/User";
 
 const baseUrl = "/api/v1";
+jest.mock("../../utils/emailSender.ts", () => {
+  return {
+    sendEmail: jest.fn(),
+  };
+});
 
 describe("Register Function", () => {
   beforeEach(async () => {
@@ -19,20 +23,39 @@ describe("Register Function", () => {
     await User.deleteMany({});
   });
 
-  it("should return 400 if required fields are missing", async () => {
-    const response = await request(app)
-      .post(`${baseUrl}/auth/register`)
-      .send({ firstName: "John", lastName: "Doe" });
+  it("should return 400 if a required field is missing", async () => {
+    const response = await request(app).post(`${baseUrl}/auth/register`).send({
+      firstName: "John",
+      lastName: "Doe",
+      password: "password123",
+    });
     expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe('"email" is required');
   });
 
-  it("should return 400 if required fields are missing", async () => {
-    const response = (await request(app)
-      .post(`${baseUrl}/auth/registe`)
-      .send({ firstName: "John", lastName: "Doe" })) as any;
+  it("should return 404 if wrong url is entered", async () => {
+    const response = (await request(app).post(`${baseUrl}/auth/registe`).send({
+      firstName: "John",
+      lastName: "Doe",
+      password: "password123",
+      email: "test@example.com",
+    })) as any;
     expect(response.statusCode).toBe(404);
     expect(response.error.message).toBe(
       "cannot POST /api/v1/auth/registe (404)"
+    );
+  });
+
+  it("should return 400 if Validation fails", async () => {
+    const response = (await request(app).post(`${baseUrl}/auth/register`).send({
+      firstName: "John",
+      lastName: "Doe",
+      password: "p",
+      email: "test@example.com",
+    })) as any;
+    expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe(
+      '"password" length must be at least 2 characters long'
     );
   });
 

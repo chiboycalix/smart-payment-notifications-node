@@ -8,9 +8,11 @@ import { JWT_SECRET } from "../../config/env";
 const baseUrl = "/api/v1";
 
 describe("Create Account Tests", () => {
+  const wrongTestEmail = "wrong@gmail.com";
   const testEmail = "test@example.com";
-  const wrongToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNoaW5vbnNvQHNlY29uZGNvbXBhbnkubmwiLCJpYXQiOjE2OTY1OTEwODIsImV4cCI6MTY5NjY3NzQ4Mn0.nVuXCG-9hCI_isNgEMg4DgF77-S6YElnDrS7EhysUCc";
+  const wrongToken = jwt.sign({ email: wrongTestEmail }, JWT_SECRET, {
+    expiresIn: "1d",
+  });
   const token = jwt.sign({ email: testEmail }, JWT_SECRET, {
     expiresIn: "1d",
   });
@@ -54,9 +56,7 @@ describe("Create Account Tests", () => {
         accountNumber: "0114276910",
       });
     expect(response.statusCode).toBe(400);
-    expect(response.body.message).toBe(
-      "account name, account balance, and account number are required"
-    );
+    expect(response.body.message).toBe('"accountBalance" is required');
   });
 
   it("should return 404 if user with token does not exist", async () => {
@@ -67,13 +67,27 @@ describe("Create Account Tests", () => {
         accountName: "New Account",
         accountNumber: "0114276911",
         accountBalance: 20,
-        owner: owner,
       });
     expect(response.statusCode).toBe(404);
     expect(response.body.message).toBe("User not found");
   });
 
-  it("should return 404 if user with token does not exist", async () => {
+  it("should return 409 if account with account number already exists", async () => {
+    const response = await request(app)
+      .post(`${baseUrl}/account`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        accountName: "New Account",
+        accountNumber: "0114276910",
+        accountBalance: 20,
+      });
+    expect(response.statusCode).toBe(409);
+    expect(response.body.message).toBe(
+      "Account with this account number already exists"
+    );
+  });
+
+  it("should successfully create an account", async () => {
     const response = await request(app)
       .post(`${baseUrl}/account`)
       .set("Authorization", `Bearer ${token}`)
@@ -81,7 +95,6 @@ describe("Create Account Tests", () => {
         accountName: "New Account",
         accountNumber: "0114276911",
         accountBalance: 20,
-        owner: owner,
       });
     expect(response.statusCode).toBe(201);
   });

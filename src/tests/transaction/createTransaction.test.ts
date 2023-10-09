@@ -2,16 +2,17 @@ import request from "supertest";
 import app from "../../app";
 import { Account } from "../../models/Account";
 import { User } from "../../models/User";
-import { Transaction } from "../../models/Transaction";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../../config/env";
 const baseUrl = "/api/v1";
 
 describe("Create Transaction Tests", () => {
   const testEmail = "test@example.com";
-  const wrongToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNoaW5vbnNvQHNlY29uZGNvbXBhbnkubmwiLCJpYXQiOjE2OTY1OTEwODIsImV4cCI6MTY5NjY3NzQ4Mn0.nVuXCG-9hCI_isNgEMg4DgF77-S6YElnDrS7EhysUCc";
+  const wrongTestEmail = "wrong@gmail.com";
   const token = jwt.sign({ email: testEmail }, JWT_SECRET, {
+    expiresIn: "1d",
+  });
+  const wrongToken = jwt.sign({ email: wrongTestEmail }, JWT_SECRET, {
     expiresIn: "1d",
   });
   let owner: any;
@@ -80,11 +81,10 @@ describe("Create Transaction Tests", () => {
       .send({
         transactionType: "debit",
         transactionAmount: "20",
+        transactionAccount: "0114276910",
       });
     expect(response.statusCode).toBe(400);
-    expect(response.body.message).toBe(
-      "transaction type, amount, and account number are required"
-    );
+    expect(response.body.message).toBe('"transactionDescription" is required');
   });
 
   it("should return 400 if invalid transaction type is passed", async () => {

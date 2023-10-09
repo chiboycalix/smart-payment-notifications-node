@@ -8,6 +8,10 @@ import { ILoginUser, IUser } from "../interfaces/user";
 import { successResponse } from "../responses/successResponse";
 import { JWT_SECRET } from "../config/env";
 import { sendEmail } from "../utils/emailSender";
+import {
+  registerUserValidateInput,
+  loginUserValidateInput,
+} from "../validators/authValidator";
 
 export class AuthController {
   private userRepository: UserRepository;
@@ -17,28 +21,31 @@ export class AuthController {
 
   register = asyncErrorHandler(
     async (req: Request, res: Response, next: NextFunction) => {
-      const user: IUser = req.body;
+      const validationResult = (await registerUserValidateInput(
+        req.body
+      )) as any;
 
-      if (!user.email || !user.password || !user.firstName || !user.lastName) {
-        return next(
-          new CustomError(
-            "Email, password, firstName and lastName are required",
-            400
-          )
-        );
+      if (validationResult?.status === "fail") {
+        return next(validationResult);
       }
-
+      const newUser = {
+        firstName: validationResult.firstName,
+        lastName: validationResult.lastName,
+        email: validationResult.email,
+        password: validationResult.password,
+      } as IUser;
       const foundUser = (await this.userRepository.findUserByEmail(
-        user.email
+        newUser.email
       )) as IUser;
-
       if (foundUser) {
         return next(new CustomError("User already exists", 409));
       }
 
-      const hashedPassword = await bcrypt.hash(user.password, 10);
-      user.password = hashedPassword;
-      const createdUser = (await this.userRepository.createUser(user)) as any;
+      const hashedPassword = await bcrypt.hash(validationResult.password, 10);
+      newUser.password = hashedPassword;
+      const createdUser = (await this.userRepository.createUser(
+        newUser
+      )) as any;
       const token = jwt.sign({ email: createdUser.email }, JWT_SECRET, {
         expiresIn: "1d",
       });
@@ -55,13 +62,13 @@ export class AuthController {
 
   login = asyncErrorHandler(
     async (req: Request, res: Response, next: NextFunction) => {
-      const user: ILoginUser = req.body;
-      if (!user.email || !user.password) {
-        return next(new CustomError("Email and password are required", 400));
+      const validationResult = (await loginUserValidateInput(req.body)) as any;
+      if (validationResult?.status === "fail") {
+        return next(validationResult);
       }
 
       const foundUser = (await this.userRepository.findUserByEmail(
-        user.email
+        validationResult.email
       )) as any;
 
       if (!foundUser) {
@@ -69,7 +76,7 @@ export class AuthController {
       }
 
       const isPasswordValid = await bcrypt.compare(
-        user.password,
+        validationResult.password,
         foundUser.password
       );
 

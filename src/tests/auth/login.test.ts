@@ -22,11 +22,12 @@ describe("Login Function", () => {
     await User.deleteMany({});
   });
 
-  it("should return 400 if required fields are missing", async () => {
+  it("should return 400 if a required field is missing", async () => {
     const response = await request(app)
       .post(`${baseUrl}/auth/login`)
-      .send({ firstName: "John", lastName: "Doe" });
+      .send({ email: "john.doe@test.com" });
     expect(response.statusCode).toBe(400);
+    expect(response.body.message).toBe('"password" is required');
   });
 
   it("should return 404 if user does not exist", async () => {
@@ -34,13 +35,15 @@ describe("Login Function", () => {
       .post(`${baseUrl}/auth/login`)
       .send({ email: "john.doe@test.com", password: "Doe" });
     expect(response.statusCode).toBe(404);
+    expect(response.body.message).toBe("User not found");
   });
 
-  it("should login user successfuly", async () => {
+  it("should return 401 if email or password is wrong", async () => {
     const response = await request(app)
       .post(`${baseUrl}/auth/login`)
       .send({ email: testEmail, password: "wrong password" });
     expect(response.statusCode).toBe(401);
+    expect(response.body.message).toBe("Invalid credentials");
   });
 
   it("should login user successfuly", async () => {
