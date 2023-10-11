@@ -12,11 +12,21 @@ import {
   registerUserValidateInput,
   loginUserValidateInput,
 } from "../validators/authValidator";
+import { EventRepository } from "../repositories/eventRepository";
+import { EVENT_TYPES } from "../constants";
 
 export class AuthController {
   private userRepository: UserRepository;
-  constructor({ userRepository }: { userRepository: UserRepository }) {
+  private eventRepository: EventRepository;
+  constructor({
+    userRepository,
+    eventRepository,
+  }: {
+    userRepository: UserRepository;
+    eventRepository: EventRepository;
+  }) {
     this.userRepository = userRepository;
+    this.eventRepository = eventRepository;
   }
 
   register = asyncErrorHandler(
@@ -36,7 +46,7 @@ export class AuthController {
       } as IUser;
       const foundUser = (await this.userRepository.findUserByEmail(
         newUser.email
-      )) as IUser;
+      )) as IUser | any;
       if (foundUser) {
         return next(new CustomError("User already exists", 409));
       }
@@ -46,6 +56,12 @@ export class AuthController {
       const createdUser = (await this.userRepository.createUser(
         newUser
       )) as any;
+      await this.eventRepository.createEvent({
+        ...req.body,
+        owner: createdUser._id,
+        eventName: EVENT_TYPES.USER_CREATED,
+        eventData: { ...req.body },
+      });
       const token = jwt.sign({ email: createdUser.email }, JWT_SECRET, {
         expiresIn: "1d",
       });
@@ -83,7 +99,12 @@ export class AuthController {
       if (!isPasswordValid) {
         return next(new CustomError("Invalid credentials", 401));
       }
-
+      await this.eventRepository.createEvent({
+        ...req.body,
+        owner: foundUser._id,
+        eventName: EVENT_TYPES.USER_LOGGED_IN,
+        eventData: { ...req.body },
+      });
       const token = jwt.sign({ email: foundUser.email }, JWT_SECRET, {
         expiresIn: "1d",
       });

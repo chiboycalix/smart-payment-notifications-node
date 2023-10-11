@@ -17,7 +17,7 @@ export const verifyToken = (
     if (token) {
       jwt.verify(token, JWT_SECRET as string, (err: any, user: IUser) => {
         if (err) {
-          res.sendStatus(403);
+          next(new CustomError("Token expired", 403));
           return;
         }
         req.user = user as IUser;

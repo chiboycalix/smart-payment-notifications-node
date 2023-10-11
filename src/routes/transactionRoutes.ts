@@ -8,14 +8,13 @@ import { User } from "../models/User";
 import { TransactionController } from "../controllers/transactionController";
 import { TransactionRepository } from "../repositories/transactionRepository";
 import { Transaction } from "../models/Transaction";
+import { EventRepository } from "../repositories/eventRepository";
+import { Event } from "../models/Event";
 
 export const TransactionRouter = express.Router();
 const userRepository = new UserRepository({ userModel: User });
 const accountRepository = new AccountRepository({ accountModel: Account });
-const accountController = new AccountController({
-  accountRepository,
-  userRepository,
-});
+const eventRepository = new EventRepository({ eventModel: Event });
 
 const transactionRepository = new TransactionRepository({
   transactionModel: Transaction,
@@ -25,6 +24,7 @@ const transactionController = new TransactionController({
   transactionRepository,
   userRepository,
   accountRepository,
+  eventRepository,
 });
 
 TransactionRouter.post(
