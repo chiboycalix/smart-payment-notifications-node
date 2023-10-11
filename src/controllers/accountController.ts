@@ -6,19 +6,25 @@ import { successResponse } from "../responses/successResponse";
 import { UserRepository } from "../repositories/userRepository";
 import { IUser } from "../interfaces/user";
 import { createAccountValidateInput } from "../validators/accountValidation";
+import { EventRepository } from "../repositories/eventRepository";
+import { EVENT_TYPES } from "../constants";
 
 export class AccountController {
   private accountRepository: AccountRepository;
   private userRepository: UserRepository;
+  private eventRepository: EventRepository;
   constructor({
     accountRepository,
     userRepository,
+    eventRepository,
   }: {
     accountRepository: AccountRepository;
     userRepository: UserRepository;
+    eventRepository: EventRepository;
   }) {
     this.accountRepository = accountRepository;
     this.userRepository = userRepository;
+    this.eventRepository = eventRepository;
   }
 
   createAccount = asyncErrorHandler(
@@ -53,6 +59,12 @@ export class AccountController {
       validationResult.owner = foundUser._id;
       const createdAccount =
         await this.accountRepository.createAccount(validationResult);
+      await this.eventRepository.createEvent({
+        ...req.body,
+        owner: foundUser._id,
+        eventName: EVENT_TYPES.ACCOUNT_CREATED,
+        eventData: { ...req.body },
+      });
       successResponse(
         res,
         { message: "Account was created successfully", data: createdAccount },

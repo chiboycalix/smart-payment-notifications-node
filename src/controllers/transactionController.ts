@@ -7,23 +7,29 @@ import { UserRepository } from "../repositories/userRepository";
 import { IUser } from "../interfaces/user";
 import { AccountRepository } from "../repositories/accountRepository";
 import { createTransactionValidateInput } from "../validators/transactionValidation";
+import { EventRepository } from "../repositories/eventRepository";
+import { EVENT_TYPES } from "../constants";
 
 export class TransactionController {
   private transactionRepository: TransactionRepository;
   private userRepository: UserRepository;
   private accountRepository: AccountRepository;
+  private eventRepository: EventRepository;
   constructor({
     transactionRepository,
     userRepository,
     accountRepository,
+    eventRepository,
   }: {
     transactionRepository: TransactionRepository;
     userRepository: UserRepository;
     accountRepository: AccountRepository;
+    eventRepository: EventRepository;
   }) {
     this.transactionRepository = transactionRepository;
     this.userRepository = userRepository;
     this.accountRepository = accountRepository;
+    this.eventRepository = eventRepository;
   }
 
   createTransaction = asyncErrorHandler(
@@ -71,7 +77,12 @@ export class TransactionController {
       validationResult.transactionOwner = foundUser._id;
       const createdTransaction =
         await this.transactionRepository.createTransaction(validationResult);
-
+      await this.eventRepository.createEvent({
+        ...req.body,
+        owner: foundUser._id,
+        eventName: EVENT_TYPES.TRANSACTION_CREATED,
+        eventData: { ...req.body },
+      });
       successResponse(
         res,
         {

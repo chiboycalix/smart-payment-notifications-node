@@ -77,7 +77,6 @@ describe("Register Function", () => {
       firstName: "John",
       lastName: "Doe",
     });
-
     expect(response.statusCode).toEqual(201);
     expect(response.body.data).toHaveProperty("_id");
     expect(response.body.data).toHaveProperty("firstName", "John");
