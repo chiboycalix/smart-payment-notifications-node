@@ -4,9 +4,10 @@
 
 [![Test Coverage](https://api.codeclimate.com/v1/badges/1ecb23e8968161650dac/test_coverage)](https://codeclimate.com/github/chiboycalix/smart-payment-notifications-node/test_coverage)
 
-Objective: Create a web-based application that allows users to receive instant notifications for their online transactions and payments.
+## Objective: 
+Create a web-based application that allows users to receive instant notifications for their online transactions and payments.
 
-Features and Milestones:
+## Features and Milestones:
 
 > - User Registration and Login: Build a user authentication system, allowing users to register, log in, and manage their accounts.
 
