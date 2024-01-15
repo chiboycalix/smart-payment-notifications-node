@@ -143,6 +143,7 @@ describe("Create Transaction Tests", () => {
         transactionType: "credit",
         transactionAccount: "0114276910",
       });
+      console.log(response.body, 'response')
     expect(response.statusCode).toBe(201);
     expect(response.body.data.message).toBe(
       "Transaction was created successfully"

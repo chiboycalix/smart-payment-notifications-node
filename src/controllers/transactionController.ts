@@ -9,7 +9,7 @@ import { AccountRepository } from "../repositories/accountRepository";
 import { createTransactionValidateInput } from "../validators/transactionValidation";
 import { EventRepository } from "../repositories/eventRepository";
 import { EVENT_TYPES } from "../constants";
-
+import { client } from "../utils/redisClient";
 export class TransactionController {
   private transactionRepository: TransactionRepository;
   private userRepository: UserRepository;
@@ -83,6 +83,9 @@ export class TransactionController {
         eventName: EVENT_TYPES.TRANSACTION_CREATED,
         eventData: { ...req.body },
       });
+
+      await client.publish("notifications", "Transaction was created successfully")
+
       successResponse(
         res,
         {

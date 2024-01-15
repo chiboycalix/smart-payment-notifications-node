@@ -38,6 +38,7 @@ database.connect();
 
 app.use(Sentry.Handlers.tracingHandler());
 app.use("/api/v1", API.connect());
+
 app.get("/debug-sentry", function mainHandler(req, res) {
   throw new Error("My first Sentry error!");
 });
@@ -50,5 +51,6 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
 });
 app.use(Sentry.Handlers.errorHandler());
 app.use(globalErrorHandler);
+
 export { chalk };
 export default app;
