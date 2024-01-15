@@ -84,7 +84,7 @@ export class TransactionController {
         eventData: { ...req.body },
       });
 
-      await client.publish("notifications", "Transaction was created successfully")
+      await client.publish("notifications", "New notification: Transaction was created successfully")
 
       successResponse(
         res,
